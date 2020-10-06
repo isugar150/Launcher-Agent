@@ -80,6 +80,9 @@ Function un.onInit
 FunctionEnd
 
 Section Uninstall
+  Detailprint "remove TaskMgr..."
+  nsExec::Exec 'schtasks /delete /tn LAgent.exe /f'
+  nsExec::Exec 'taskkill /f /im "LAgent.exe"'
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\vtortola.WebSockets.Rfc6455.dll"
   Delete "$INSTDIR\vtortola.WebSockets.dll"
@@ -88,9 +91,6 @@ Section Uninstall
   Delete "$INSTDIR\NLog.dll"
   Delete "$INSTDIR\Newtonsoft.Json.dll"
   Delete "$INSTDIR\LAgent.exe"
-  
-  Detailprint "remove TaskMgr..."
-  nsExec::Exec 'schtasks /delete /tn LAgent /f'
 
   RMDir "$INSTDIR"
 
