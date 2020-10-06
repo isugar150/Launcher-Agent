@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,13 @@ namespace Launcher_Agent
 
         static void Main(string[] args)
         {
+            ServiceBase[] ServicesToRun;
+            ServicesToRun = new ServiceBase[]
+            {
+            new Service()
+            };
+            ServiceBase.Run(ServicesToRun);
+            System.Diagnostics.Debugger.Launch();
             #region init WebSocket Server
             /*try
             {

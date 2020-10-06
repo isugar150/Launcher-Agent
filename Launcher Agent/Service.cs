@@ -19,6 +19,7 @@ namespace Launcher_Agent
     partial class Service : ServiceBase
     {
         private static WebSocketListener webSocketServer = null;
+        private Thread service = null;
 
         public Service()
         {
@@ -26,6 +27,24 @@ namespace Launcher_Agent
         }
 
         protected override void OnStart(string[] args)
+        {
+            // TODO: 여기에 서비스를 시작하는 코드를 추가합니다.
+            Console.WriteLine("서비스 시작됨.");
+            service = new Thread(new ThreadStart(webSocketInit));
+            service.IsBackground = true;
+            service.Start();
+        }
+
+        protected override void OnStop()
+        {
+            // TODO: 서비스를 중지하는 데 필요한 작업을 수행하는 코드를 여기에 추가합니다.
+            Console.WriteLine("서비스 종료됨.");
+            webSocketServer.Stop();
+            webSocketServer.Dispose();
+            Environment.Exit(0);
+        }
+        #region Web socket
+        private void webSocketInit()
         {
             #region init WebSocket Server
             try
@@ -62,16 +81,8 @@ namespace Launcher_Agent
                 throw e1;
             }
             #endregion
-            // TODO: 여기에 서비스를 시작하는 코드를 추가합니다.
         }
-
-        protected override void OnStop()
-        {
-            webSocketServer.Stop();
-            webSocketServer.Dispose();
-            // TODO: 서비스를 중지하는 데 필요한 작업을 수행하는 코드를 여기에 추가합니다.
-        }
-
+        #endregion
 
         #region Web socket related
 

@@ -16,3 +16,5 @@ C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\obj\Release\Launch
 C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\obj\Release\Launcher Agent.pdb
 C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\bin\Release\NLog.dll
 C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\bin\Release\NLog.xml
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\obj\Release\Launcher_Agent.Service.resources
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\obj\Release\Launcher Agent.csprojAssemblyReference.cache
