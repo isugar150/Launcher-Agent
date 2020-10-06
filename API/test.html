@@ -14,6 +14,16 @@
                 if ('WebSocket' in window) {
                     // 웹소켓 서버주소와 프로토콜(echo)을 지정하여, WebSocket 객체를 만듦.
                     var ws = new WebSocket('ws://127.0.0.1:49862');
+                    
+                    /*
+                    0 - connection not yet established
+                    1 - conncetion established
+                    2 - in closing handshake
+                    3 - connection closed or could not open
+                    */
+                    if(ws.readyState == 0){
+                        document.write("Launcher Agent 설치 후 다시시도하세요.");
+                    }
                 
                     // 웹소켓이 연결되었을때
                     ws.onopen = function () {

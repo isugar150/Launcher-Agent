@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading;
@@ -15,22 +17,35 @@ using vtortola.WebSockets.Deflate;
 
 namespace Launcher_Agent
 {
+    [DllImport("kernel32.dll")]
+    private static extern uint WTSGetActiveConsoleSessionId();
+
     class Program
     {
-        //private static WebSocketListener webSocketServer = null;
+        private static Logger logger = LogManager.GetLogger("Launcher_Agent");
+        private static WebSocketListener webSocketServer = null;
 
         static void Main(string[] args)
         {
+            logger.Info("서비스 시작");
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
-            new Service()
+                new Service()
             };
             ServiceBase.Run(ServicesToRun);
-            System.Diagnostics.Debugger.Launch();
+            Debugger.Launch();
+
+            Console.ReadKey();
+        }
+
+        #region Web socket
+        public static void webSocketInit()
+        {
             #region init WebSocket Server
-            /*try
+            try
             {
+                logger.Info("Init WebSocket Server");
                 CancellationTokenSource cancellation = new CancellationTokenSource();
                 //var endpoint = new IPEndPoint(IPAddress.Any, 1818);
                 IPEndPoint endpoint;
@@ -40,8 +55,6 @@ namespace Launcher_Agent
                 int[] time = new int[2];
                 time[0] = int.Parse("0"); // 분
                 time[1] = int.Parse("10"); // 초
-
-
                 WebSocketListenerOptions options = new WebSocketListenerOptions()
                 {
                     WebSocketReceiveTimeout = new TimeSpan(0, time[0], time[1]), // 클라이언트가 서버로 요청했을때 서버가 바쁘면 Timeout
@@ -61,14 +74,13 @@ namespace Launcher_Agent
             catch (Exception e1)
             {
                 throw e1;
-            }*/
+            }
             #endregion
-
-            Console.ReadKey();
         }
+        #endregion
 
         #region Web socket related
-/*
+
         /// <summary>
         /// 클라이언트가 웹 소켓으로 접속했을때 작동하는 로직
         /// </summary>
@@ -91,7 +103,7 @@ namespace Launcher_Agent
                 }
                 catch (Exception)
                 {
-                    *//*DevLog.Write("[WebSocket] Error Accepting clients: " + aex.GetBaseException().Message, LOG_LEVEL.ERROR);*//*
+                    /*DevLog.Write("[WebSocket] Error Accepting clients: " + aex.GetBaseException().Message, LOG_LEVEL.ERROR);*/
                 }
             }
         }
@@ -138,16 +150,7 @@ namespace Launcher_Agent
                             // 원격 데스크톱 연결
                             else if (requestMsg["method"].ToString().Equals("RunMSTSC"))
                             {
-                                var commands = new ConcurrentBag<string>();
-                                //List<String> commands = new List<String>();
-                                commands.Add("$Server=\"" + requestMsg["url"].ToString() + "\"");
-                                commands.Add("$Port=\"" + requestMsg["port"].ToString() + "\"");
-                                commands.Add("$User=\"" + requestMsg["user"].ToString() + "\"");
-                                commands.Add("$Password=\"" + requestMsg["pwd"].ToString() + "\"");
-                                commands.Add("cmdkey /add:$Server /user:$User /pass:$Password");
-                                commands.Add("mstsc /v:$Server:$Port");
-
-                                Process rdcProcess = new Process();
+                                /*Process rdcProcess = new Process();
                                 rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
                                 Debug.WriteLine("/generic:\"" + requestMsg["url"].ToString() + ":" + requestMsg["port"].ToString() + "\" /user:\"" + requestMsg["user"].ToString() + "\" /pass:\"" + requestMsg["pwd"].ToString() + "\"");
                                 rdcProcess.StartInfo.Arguments = "/generic:\"" + requestMsg["url"].ToString() + "\" /user:\"" + requestMsg["user"].ToString() + "\" /pass:\"" + requestMsg["pwd"].ToString() + "\"";
@@ -167,11 +170,13 @@ namespace Launcher_Agent
 
                                 rdcProcess.WaitForExit();
                                 rdcProcess.Close();
-                                rdcProcess.Dispose();
+                                rdcProcess.Dispose();*/
                             }
 
 
                             JObject responseMsg = new JObject();
+
+                            responseMsg["msg"] = "Success";
 
                             ws.WriteString(responseMsg.ToString());
 
@@ -196,7 +201,6 @@ namespace Launcher_Agent
                 ws.Dispose();
             }
         }
-*/
         #endregion
     }
 }
