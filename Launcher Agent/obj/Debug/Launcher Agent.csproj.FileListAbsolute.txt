@@ -1,0 +1,18 @@
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\bin\Debug\Launcher Agent.exe.config
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\bin\Debug\Launcher Agent.exe
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\bin\Debug\Launcher Agent.pdb
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\bin\Debug\Newtonsoft.Json.dll
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\bin\Debug\System.Threading.Tasks.Dataflow.dll
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\bin\Debug\vtortola.WebSockets.Deflate.dll
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\bin\Debug\vtortola.WebSockets.dll
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\bin\Debug\vtortola.WebSockets.Rfc6455.dll
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\bin\Debug\Newtonsoft.Json.xml
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\bin\Debug\System.Threading.Tasks.Dataflow.xml
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\obj\Debug\Launcher Agent.csproj.CoreCompileInputs.cache
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\obj\Debug\Launcher Agent.csproj.CopyComplete
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\obj\Debug\Launcher Agent.exe
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\obj\Debug\Launcher Agent.pdb
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\obj\Debug\Launcher_Agent.ProjectInstaller.resources
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\obj\Debug\Launcher Agent.csproj.GenerateResource.cache
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\bin\Debug\NLog.dll
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\Launcher Agent\bin\Debug\NLog.xml

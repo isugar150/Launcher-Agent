@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<head>
+    <title>WebSocket 테스트</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript">
+        var version = "1.0.0";
+        $(document).ready(function(){
+            //var sendData = RunFile('mstsc', '/v:www.namejm.kr:13389 /admin /f');
+            var sendData = RunScript('www.namejm.kr', '13389', 'isugar150', 'sugar63231!@');
+
+            connectWebSocket();
+            function connectWebSocket(data){
+                if ('WebSocket' in window) {
+                    // 웹소켓 서버주소와 프로토콜(echo)을 지정하여, WebSocket 객체를 만듦.
+                    var ws = new WebSocket('ws://127.0.0.1:49862');
+                
+                    // 웹소켓이 연결되었을때
+                    ws.onopen = function () {
+                        console.log('connected');
+                
+                        ws.send(sendData);
+                    };
+                
+                    // 메세지를 받았을때
+                    ws.onmessage = function (msg) {
+                        console.log('data: ' + msg.data);
+                        ws.close();
+                    };
+                
+                    // 연결이 끊어졌을때
+                    ws.onclose = function () {
+                        console.log('connection is closed');
+                        ws.close();
+                    };
+                }
+                else
+                    console.log('WebSocket not supported.');
+            }
+        });
+
+        function RunScript(url, port, user, pwd){
+            // 리스트 생성
+            var sendList = new Array() ;
+
+            // 객체 생성
+            var data = new Object() ;
+
+            data.method = 'RunMSTSC';
+            data.url = url;
+            data.port = port;
+            data.user = user;
+            data.pwd = pwd;
+            data.version = version;
+
+            // 리스트에 생성된 객체 삽입
+            sendList.push(data) ;
+
+            // String 형태로 변환
+            var jsonData = JSON.stringify(sendList);
+
+            console.log(jsonData);
+            
+            return jsonData;
+        }
+
+        function RunFile(path, args){
+            // 리스트 생성
+            var sendList = new Array() ;
+
+            // 객체 생성
+            var data = new Object() ;
+
+            data.method = 'RunFile';
+            data.path = path;
+            data.args = args;
+            data.version = version;
+
+            // 리스트에 생성된 객체 삽입
+            sendList.push(data) ;
+
+            // String 형태로 변환
+            var jsonData = JSON.stringify(sendList);
+
+            console.log(jsonData);
+            
+            return jsonData;
+        }
+    </script>
+</head>
+    <body>
+    </body>
+</html>
