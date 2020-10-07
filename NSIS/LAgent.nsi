@@ -54,11 +54,11 @@ Section "MainSection" SEC01
   File "..\LAgent\bin\Release\vtortola.WebSockets.Rfc6455.dll"
   Detailprint "Create TaskMgr..."
   ; nsExec::Exec 'reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "LAgent" /t REG_SZ /d "$INSTDIR\LAgent.exe" /f'
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "LAgent" "$INSTDIR\LAgent.exe"
+  ; WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "LAgent" "$INSTDIR\LAgent.exe"
   ; nsExec::Exec '$INSTDIR\LAgent.exe'
-  ; nsExec::Exec 'schtasks /create /tn "LAgent" /tr "$INSTDIR\LAgent.exe" /sc ONSTART /RL HIGHEST'
-  ; nsExec::Exec 'schtasks /Run /tn LAgent'
-  
+  nsExec::Exec 'schtasks /create /tn "LAgent" /tr "$INSTDIR\LAgent.exe" /sc ONSTART /RL HIGHEST'
+  nsExec::Exec 'schtasks /Run /tn LAgent'
+
 SectionEnd
 
 Section -Post
@@ -85,10 +85,10 @@ FunctionEnd
 
 Section Uninstall
   Detailprint "remove TaskMgr..."
-  DeleteRegValue HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "LAgent"
+  ; DeleteRegValue HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "LAgent"
   ; nsExec::Exec 'reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\LAgent /f'
-  ; nsExec::Exec 'schtasks /delete /tn LAgent.exe /f'
-  ; nsExec::Exec 'taskkill /f /im "LAgent.exe"'
+  nsExec::Exec 'schtasks /delete /tn LAgent.exe /f'
+  nsExec::Exec 'taskkill /f /im "LAgent.exe"'
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\vtortola.WebSockets.Rfc6455.dll"
   Delete "$INSTDIR\vtortola.WebSockets.dll"
