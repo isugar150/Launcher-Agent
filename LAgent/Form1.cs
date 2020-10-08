@@ -146,6 +146,12 @@ namespace LAgent
                             else if (requestMsg["method"].ToString().Equals("RunMSTSC"))
                             {
                                 Process rdcProcess = new Process();
+
+                                rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
+                                Debug.WriteLine("/delete:\"" + requestMsg["url"].ToString() + "\"");
+                                rdcProcess.StartInfo.Arguments = "/delete:\"" + requestMsg["url"].ToString() + "\"";
+                                rdcProcess.Start();
+
                                 rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
                                 Debug.WriteLine("/generic:\"" + requestMsg["url"].ToString() + ":" + requestMsg["port"].ToString() + "\" /user:\"" + requestMsg["user"].ToString() + "\" /pass:\"" + requestMsg["pwd"].ToString() + "\"");
                                 rdcProcess.StartInfo.Arguments = "/generic:\"" + requestMsg["url"].ToString() + "\" /user:\"" + requestMsg["user"].ToString() + "\" /pass:\"" + requestMsg["pwd"].ToString() + "\"";
