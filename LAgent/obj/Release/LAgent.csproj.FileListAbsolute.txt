@@ -10,7 +10,6 @@ C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\LAgent\bin\Release\vtortola.WebSo
 C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\LAgent\bin\Release\Newtonsoft.Json.xml
 C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\LAgent\bin\Release\NLog.xml
 C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\LAgent\bin\Release\System.Threading.Tasks.Dataflow.xml
-C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\LAgent\obj\Release\LAgent.csprojAssemblyReference.cache
 C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\LAgent\obj\Release\LAgent.Form1.resources
 C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\LAgent\obj\Release\LAgent.Properties.Resources.resources
 C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\LAgent\obj\Release\LAgent.csproj.GenerateResource.cache

@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "LAgent"
-!define PRODUCT_VERSION "1.0.0"
+!define PRODUCT_VERSION ""
 !define PRODUCT_PUBLISHER "Jm's Corp"
 !define PRODUCT_WEB_SITE "http://www.namejm.kr/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\LAgent.exe"

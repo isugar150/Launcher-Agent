@@ -128,7 +128,7 @@ namespace LAgent
                             Debug.WriteLine(requestMsg.ToString());
 
                             // 앱 버전 체크
-                            if (!requestMsg["version"].ToString().Equals("1.0.0"))
+                            if (!requestMsg["version"].ToString().Equals("1.0.1"))
                             {
                                 Debug.WriteLine("Old app version");
                                 requestMsg["msg"] = "Old app version";
