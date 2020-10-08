@@ -17,3 +17,4 @@ C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\LAgent\obj\Release\LAgent.csproj.
 C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\LAgent\obj\Release\LAgent.csproj.CopyComplete
 C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\LAgent\obj\Release\LAgent.exe
 C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\LAgent\obj\Release\LAgent.pdb
+C:\Users\JMKIM\Documents\GitHub\Launcher-Agent\LAgent\obj\Release\LAgent.csprojAssemblyReference.cache

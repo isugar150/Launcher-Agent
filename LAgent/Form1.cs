@@ -127,56 +127,58 @@ namespace LAgent
 
                             JObject responseMsg = new JObject();
 
-                            Debug.WriteLine(requestMsg.ToString());
-
                             // 앱 버전 체크
                             if (!requestMsg["version"].ToString().Equals("1.0.1"))
                             {
                                 Debug.WriteLine("Old app version");
                                 responseMsg["msg"] = "Old app version";
-                                return;
                             }
 
-                            // 파일 실행
-                            if (requestMsg["method"].ToString().Equals("RunFile"))
+                            else
                             {
-                                Debug.WriteLine("RunFile");
-                                Process.Start(requestMsg["path"].ToString(), requestMsg["args"].ToString());
+
+                                // 파일 실행
+                                if (requestMsg["method"].ToString().Equals("RunFile"))
+                                {
+                                    Debug.WriteLine("RunFile");
+                                    Process.Start(requestMsg["path"].ToString(), requestMsg["args"].ToString());
+                                }
+
+                                // 원격 데스크톱 연결
+                                else if (requestMsg["method"].ToString().Equals("RunRDP"))
+                                {
+                                    Process rdcProcess = new Process();
+
+
+                                    rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
+                                    Debug.WriteLine("/delete:\"" + requestMsg["url"].ToString() + "\"");
+                                    rdcProcess.StartInfo.Arguments = "/delete:\"" + requestMsg["url"].ToString() + "\"";
+                                    rdcProcess.Start();
+
+                                    rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
+                                    Debug.WriteLine("/generic:\"" + requestMsg["url"].ToString() + ":" + requestMsg["port"].ToString() + "\" /user:\"" + requestMsg["user"].ToString() + "\" /pass:\"" + requestMsg["pwd"].ToString() + "\"");
+                                    rdcProcess.StartInfo.Arguments = "/generic:\"" + requestMsg["url"].ToString() + "\" /user:\"" + requestMsg["user"].ToString() + "\" /pass:\"" + requestMsg["pwd"].ToString() + "\"";
+                                    rdcProcess.Start();
+
+                                    rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\mstsc.exe");
+                                    Debug.WriteLine("/v \"" + requestMsg["url"].ToString() + ":" + requestMsg["port"].ToString() + "\" /admin /f");
+                                    rdcProcess.StartInfo.Arguments = "/v \"" + requestMsg["url"].ToString() + ":" + requestMsg["port"].ToString() + "\" /admin /f"; // ip or name of computer to connect
+                                    rdcProcess.Start();
+
+                                    Thread.Sleep(500);
+
+                                    rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
+                                    Debug.WriteLine("/delete:\"" + requestMsg["url"].ToString() + "\"");
+                                    rdcProcess.StartInfo.Arguments = "/delete:\"" + requestMsg["url"].ToString() + "\"";
+                                    rdcProcess.Start();
+
+                                    rdcProcess.WaitForExit();
+                                    rdcProcess.Close();
+                                    rdcProcess.Dispose();
+                                }
+
+                                responseMsg["msg"] = "Success";
                             }
-
-                            // 원격 데스크톱 연결
-                            else if (requestMsg["method"].ToString().Equals("RunMSTSC"))
-                            {
-                                Process rdcProcess = new Process();
-
-                                rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
-                                Debug.WriteLine("/delete:\"" + requestMsg["url"].ToString() + "\"");
-                                rdcProcess.StartInfo.Arguments = "/delete:\"" + requestMsg["url"].ToString() + "\"";
-                                rdcProcess.Start();
-
-                                rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
-                                Debug.WriteLine("/generic:\"" + requestMsg["url"].ToString() + ":" + requestMsg["port"].ToString() + "\" /user:\"" + requestMsg["user"].ToString() + "\" /pass:\"" + requestMsg["pwd"].ToString() + "\"");
-                                rdcProcess.StartInfo.Arguments = "/generic:\"" + requestMsg["url"].ToString() + "\" /user:\"" + requestMsg["user"].ToString() + "\" /pass:\"" + requestMsg["pwd"].ToString() + "\"";
-                                rdcProcess.Start();
-
-                                rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\mstsc.exe");
-                                Debug.WriteLine("/v \"" + requestMsg["url"].ToString() + ":" + requestMsg["port"].ToString() + "\" /admin /f");
-                                rdcProcess.StartInfo.Arguments = "/v \"" + requestMsg["url"].ToString() + ":" + requestMsg["port"].ToString() + "\" /admin /f"; // ip or name of computer to connect
-                                rdcProcess.Start();
-
-                                Thread.Sleep(1000);
-
-                                rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
-                                Debug.WriteLine("/delete:\"" + requestMsg["url"].ToString() + "\"");
-                                rdcProcess.StartInfo.Arguments = "/delete:\"" + requestMsg["url"].ToString() + "\"";
-                                rdcProcess.Start();
-
-                                rdcProcess.WaitForExit();
-                                rdcProcess.Close();
-                                rdcProcess.Dispose();
-                            }
-
-                            responseMsg["msg"] = "Success";
 
                             ws.WriteString(responseMsg.ToString());
 
