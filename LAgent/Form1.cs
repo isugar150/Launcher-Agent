@@ -125,13 +125,15 @@ namespace LAgent
                         {
                             JObject requestMsg = JObject.Parse(requestInfo.Replace("[", "").Replace("]", ""));
 
+                            JObject responseMsg = new JObject();
+
                             Debug.WriteLine(requestMsg.ToString());
 
                             // 앱 버전 체크
                             if (!requestMsg["version"].ToString().Equals("1.0.1"))
                             {
                                 Debug.WriteLine("Old app version");
-                                requestMsg["msg"] = "Old app version";
+                                responseMsg["msg"] = "Old app version";
                                 return;
                             }
 
@@ -173,9 +175,6 @@ namespace LAgent
                                 rdcProcess.Close();
                                 rdcProcess.Dispose();
                             }
-
-
-                            JObject responseMsg = new JObject();
 
                             responseMsg["msg"] = "Success";
 
