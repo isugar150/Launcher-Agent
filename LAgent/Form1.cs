@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -14,38 +15,51 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using vtortola.WebSockets;
 using vtortola.WebSockets.Deflate;
+using static TMTAgent.Ini;
 
-namespace LAgent
+namespace TMTAgent
 {
     public partial class Form1 : Form
     {
-        private static Logger logger = LogManager.GetLogger("Launcher_Agent");
         private static WebSocketListener webSocketServer = null;
+        private bool debugMode = false;
 
-        public Form1()
+        public Form1(string[] args)
         {
             InitializeComponent();
+            CheckForIllegalCrossThreadCalls = false;
+            for (int i = 0; i < args.Length; i++) { 
+                if(args[i].IndexOf("show", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    debugMode = true;
+                }
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.Visible = false; 
+            if (!debugMode)
+            {
+                this.Visible = false;
+            }
             ShowInTaskbar = false;
+
             webSocketInit();
         }
 
         #region Web socket
-        public static void webSocketInit()
+        public void webSocketInit()
         {
             #region init WebSocket Server
             try
             {
-                logger.Info("Init WebSocket Server");
+                int webSocketPort = 49862;
+                appendText("Init WebSocket Server Port is " + webSocketPort);
                 CancellationTokenSource cancellation = new CancellationTokenSource();
                 //var endpoint = new IPEndPoint(IPAddress.Any, 1818);
                 IPEndPoint endpoint;
 
-                endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), int.Parse("49862"));
+                endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), webSocketPort);
 
                 int[] time = new int[2];
                 time[0] = int.Parse("0"); // 분
@@ -82,7 +96,7 @@ namespace LAgent
         /// <param name="server">웹 소켓 리스너</param>
         /// <param name="token">웹 소켓 토큰</param>
         /// <returns></returns>
-        private static async Task AcceptWebSocketClientsAsync(WebSocketListener server, CancellationToken token)
+        private async Task AcceptWebSocketClientsAsync(WebSocketListener server, CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
@@ -96,9 +110,9 @@ namespace LAgent
                         await Task.Run(() => HandleConnectionAsync(ws, token)); //<== await 시 요청을 받으면 이전 요청이 종료할때까지 대기했다가 실행
                     }
                 }
-                catch (Exception)
+                catch (Exception aex)
                 {
-                    /*DevLog.Write("[WebSocket] Error Accepting clients: " + aex.GetBaseException().Message, LOG_LEVEL.ERROR);*/
+                    appendText("[WebSocket] Error Accepting clients: " + aex.GetBaseException().Message);
                 }
             }
         }
@@ -109,7 +123,7 @@ namespace LAgent
         /// <param name="ws">웹 소켓</param>
         /// <param name="cancellation">토큰</param>
         /// <returns></returns>
-        private static async Task HandleConnectionAsync(WebSocket ws, CancellationToken cancellation)
+        private async Task HandleConnectionAsync(WebSocket ws, CancellationToken cancellation)
         {
             try
             {
@@ -129,64 +143,62 @@ namespace LAgent
 
                             Process process = new Process();
 
+                            appendText("recive Message: " + requestMsg.ToString());
+
                             // 앱 버전 체크
-                            if (!requestMsg["version"].ToString().Equals("1.0.2"))
+                            if (!requestMsg["version"].ToString().Equals("1.0.0"))
                             {
-                                Debug.WriteLine("Old app version");
+                                appendText("Old app version");
                                 responseMsg["msg"] = "Old app version";
                             }
 
                             else
                             {
-                                // 파일 실행
-                                if (requestMsg["method"].ToString().Equals("RunFile"))
+                                string tmtPath = "";
+                                if (new FileInfo(Application.StartupPath + @"\TMT.exe").Exists)
                                 {
-                                    Debug.WriteLine("RunFile");
-                                    Process.Start(requestMsg["path"].ToString(), requestMsg["args"].ToString());
+                                    tmtPath = Application.StartupPath + @"\TMT.exe";
+                                }
+                                else
+                                {
+                                    tmtPath = @"C:\Program Files (x86)\WEMEETS\MeetTalk\TMT.exe";
                                 }
 
-                                // 원격 데스크톱 연결
-                                else if (requestMsg["method"].ToString().Equals("RunRDP"))
+                                appendText("tmtPath is " + tmtPath);
+
+                                if (requestMsg["method"].ToString().Equals("RunTMT"))
                                 {
-                                    process.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
-                                    Debug.WriteLine("/delete:\"" + requestMsg["url"].ToString() + "\"");
-                                    process.StartInfo.Arguments = "/delete:\"" + requestMsg["url"].ToString() + "\"";
-                                    process.Start();
-
-                                    process.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
-                                    Debug.WriteLine("/generic:\"" + requestMsg["url"].ToString() + ":" + requestMsg["port"].ToString() + "\" /user:\"" + requestMsg["user"].ToString() + "\" /pass:\"" + requestMsg["pwd"].ToString() + "\"");
-                                    process.StartInfo.Arguments = "/generic:\"" + requestMsg["url"].ToString() + "\" /user:\"" + requestMsg["user"].ToString() + "\" /pass:\"" + requestMsg["pwd"].ToString() + "\"";
-                                    process.Start();
-
-                                    process.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\mstsc.exe");
-                                    Debug.WriteLine("/v \"" + requestMsg["url"].ToString() + ":" + requestMsg["port"].ToString() + "\" /admin /f");
-                                    process.StartInfo.Arguments = "/v \"" + requestMsg["url"].ToString() + ":" + requestMsg["port"].ToString() + "\" /admin /f"; // ip or name of computer to connect
-                                    process.Start();
+                                    Process.Start(tmtPath, String.Format("-u {0} START_GSC_MeetTalk_SSO", requestMsg["sawonNo"].ToString()));
+                                    appendText("Arguments: " + String.Format("-u {0} START_GSC_MeetTalk_SSO", requestMsg["sawonNo"].ToString()));
+                                } else if (requestMsg["method"].ToString().Equals("CloseTMT"))
+                                {
+                                    Process.Start(tmtPath, String.Format("-x {0} CLOSE_GSC_MeetTalk_SSO", requestMsg["sawonNo"].ToString()));
+                                    appendText("Arguments: " + String.Format("-x {0} CLOSE_GSC_MeetTalk_SSO", requestMsg["sawonNo"].ToString()));
+                                } else if (requestMsg["method"].ToString().Equals("openChatRoom"))
+                                {
+                                    Process.Start(tmtPath, String.Format("-p2pchatn:{0}", requestMsg["userIdnfr"].ToString()));
+                                    appendText("Arguments: " + String.Format("-p2pchatn:{0}", requestMsg["userIdnfr"].ToString()));
+                                }
+                                else
+                                {
+                                    responseMsg["msg"] = "Invalid Method";
+                                    ws.WriteString(responseMsg.ToString());
+                                    ws.Close();
                                 }
 
                                 responseMsg["msg"] = "Success";
                             }
 
+                            appendText("response Message: " + responseMsg.ToString());
+
                             ws.WriteString(responseMsg.ToString());
 
                             ws.Close();
-                            if (requestMsg["method"].ToString().Equals("RunRDP"))
-                            {
-                                Thread.Sleep(5000);
-
-                                process.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
-                                Debug.WriteLine("/delete:\"" + requestMsg["url"].ToString() + "\"");
-                                process.StartInfo.Arguments = "/delete:\"" + requestMsg["url"].ToString() + "\"";
-                                process.Start();
-
-                                process.WaitForExit();
-                                process.Close();
-                                process.Dispose();
-                            }
                         }
                         catch (Exception e1)
                         {
-                            Debug.WriteLine(e1.Message);
+                            appendText(e1.StackTrace);
+                            appendText(e1.Message);
                         }
                     }
                 }
@@ -204,5 +216,16 @@ namespace LAgent
             }
         }
         #endregion
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            webSocketServer.Dispose();
+        }
+
+        private void appendText(string text)
+        {
+            if (debugMode)
+                textBox1.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "   " + text + "\r\n");
+        }
     }
 }
