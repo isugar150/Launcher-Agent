@@ -130,7 +130,7 @@ namespace LAgent
                             Process process = new Process();
 
                             // 앱 버전 체크
-                            if (!requestMsg["version"].ToString().Equals("1.0.2"))
+                            if (!requestMsg["version"].ToString().Equals("1.0.0"))
                             {
                                 Debug.WriteLine("Old app version");
                                 responseMsg["msg"] = "Old app version";
